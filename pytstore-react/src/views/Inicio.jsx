@@ -5,9 +5,14 @@ import clienteAxios from "../config/axios";
 
 export default function Inicio() {
   const { categoriaActual } = useTienda();
+  const token = localStorage.getItem("AUTH_TOKEN");
 
   const fetcher = () =>
-    clienteAxios("/api/productos").then((data) => data.data);
+    clienteAxios("/api/productos", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((data) => data.data);
 
   const { data, error, isLoading } = useSWR("/api/productos", fetcher, {
     refreshInterval: 1000,
@@ -20,10 +25,10 @@ export default function Inicio() {
 
   return (
     <>
-     
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         {productos.map((producto) => (
-          <Producto key={producto.imagen} producto={producto} />
+          <Producto key={producto.imagen} producto={producto}
+          botonAgregar={true} />
         ))}
       </div>
     </>

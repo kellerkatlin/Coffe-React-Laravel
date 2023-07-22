@@ -22,7 +22,11 @@ const TiendaProvider = ({ children }) => {
 
   const obtenerCategorias = async () => {
     try {
-      const { data } = await clienteAxios("/api/categorias");
+      const { data } = await clienteAxios("/api/categorias", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("AUTH_TOKEN")}`,
+        },
+      });
       setCategorias(data.data);
       setCategoriaActual(data.data[0]);
     } catch (error) {
@@ -98,7 +102,30 @@ const TiendaProvider = ({ children }) => {
       console.log(error);
     }
   };
-
+  const handleClickCompletarPedido = async (id) => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+    try {
+      await clienteAxios.put(`/api/pedidos/${id}`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleClickProductoAgotado = async (id) => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+    try {
+      await clienteAxios.put(`/api/productos/${id}`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <TiendaContext.Provider
       value={{
@@ -115,6 +142,8 @@ const TiendaProvider = ({ children }) => {
         handleEditarCantidad,
         total,
         handleSubmitNuevaOrden,
+        handleClickCompletarPedido,
+        handleClickProductoAgotado,
       }}
     >
       {children}
